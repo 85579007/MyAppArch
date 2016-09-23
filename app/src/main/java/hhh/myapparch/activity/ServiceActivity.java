@@ -83,19 +83,26 @@ public class ServiceActivity extends BaseActivity {
                 createdialog();
                 break;
             case R.id.broadcast:
+                Intent intent=new Intent(this,BroadCastService.class);
+                startService(intent);
+                createdialog();
                 break;
         }
     }
 
     private void createdialog() {
-        dialog=new ProgressDialog(this);
-        dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        dialog.setTitle("进度对话框");
-        dialog.setMessage("进度条");
-        dialog.setIcon(android.R.drawable.ic_dialog_map);
-        dialog.setIndeterminate(false);
-        dialog.setMax(100);
-        dialog.setCancelable(true);
+        if(dialog==null) {
+            dialog = new ProgressDialog(this);
+            dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            dialog.setTitle("进度对话框");
+            dialog.setMessage("进度条");
+            dialog.setIcon(android.R.drawable.ic_dialog_map);
+            dialog.setIndeterminate(false);
+            dialog.setMax(100);
+            dialog.setCancelable(true);
+        }else{
+            dialog.setProgress(0);
+        }
         dialog.show();
     }
 
