@@ -46,9 +46,10 @@ public class MainActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position){
                     case 0:
+                        MyListActivity.startActivity(MainActivity.this);
                         break;
                     case 1:
-
+                        ServiceActivity.startActivity(MainActivity.this);
                         break;
                     default:
                         break;

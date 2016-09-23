@@ -1,6 +1,5 @@
 package hhh.myapparch.activity;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -10,7 +9,6 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.Button;
 
@@ -79,13 +77,15 @@ public class ServiceActivity extends BaseActivity {
                 unbindService(conn);
                 break;
             case R.id.download:
-                myService.startDownload();
                 createdialog();
+                myService.startDownload();
+
                 break;
             case R.id.broadcast:
+                createdialog();
                 Intent intent=new Intent(this,BroadCastService.class);
                 startService(intent);
-                createdialog();
+
                 break;
         }
     }
@@ -101,7 +101,7 @@ public class ServiceActivity extends BaseActivity {
             dialog.setMax(100);
             dialog.setCancelable(true);
         }else{
-            dialog.setProgress(0);
+            dialog.setProgress(10);
         }
         dialog.show();
     }
@@ -118,6 +118,10 @@ public class ServiceActivity extends BaseActivity {
                 @Override
                 public void setProgress(int i) {
                     dialog.setProgress(i);
+                    //dialog.incrementProgressBy(1);
+                    if(i==99){
+                        dialog.dismiss();
+                    }
                 }
             });
         }
