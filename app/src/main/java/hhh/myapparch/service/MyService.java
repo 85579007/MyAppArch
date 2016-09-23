@@ -6,6 +6,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import hhh.myapparch.activity.ServiceActivity;
 import hhh.myapparch.log.MyLog;
 
 /**
@@ -14,6 +15,12 @@ import hhh.myapparch.log.MyLog;
 public class MyService extends Service {
     public static final String TAG="MyService";
     private MyBinder myBinder=new MyBinder();
+    private ServiceActivity.IDownload iDownload;
+    private int progress;
+
+    public void setDownload(ServiceActivity.IDownload iDownload) {
+        this.iDownload = iDownload;
+    }
 
     @Override
     public void onCreate() {
@@ -39,9 +46,37 @@ public class MyService extends Service {
         return myBinder;
     }
 
-    class MyBinder extends Binder{
-        public void startDownload(){
+    public void startDownload(){
             MyLog.LogWithString("startDownload");
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while(progress<100){
+                        if(iDownload!=null){
+                            iDownload.setProgress(progress);
+                        }
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }).start();
+        }
+
+    public class MyBinder extends Binder{
+//        public void startDownload(){
+//            MyLog.LogWithString("startDownload");
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//
+//                }
+//            }).start();
+//        }
+        public MyService getMyService(){
+            return MyService.this;
         }
     }
 }
