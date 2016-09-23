@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp">
+        <TextView
+            android:id="@+id/item_name"
+            android:layout_alignParentLeft="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_18"
+            android:textColor="@color/black"
+            android:hint="姓名"/>
+        <TextView
+            android:id="@+id/item_birthday"
+            android:layout_alignParentRight="true"
+            android:textSize="@dimen/font_12"
+            android:layout_alignBaseline="@id/item_name"
+            android:textColor="@color/grey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="2011-1-1"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/item_address"
+        android:textSize="@dimen/font_14"
+        android:paddingLeft="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/darkgrey"
+        android:hint="海州东路219号22幢号"/>
+</LinearLayout>

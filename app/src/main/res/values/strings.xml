@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">MyAppArch</string>
+    <string name="exit">再次点击退出</string>
+</resources>
