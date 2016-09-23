@@ -2,6 +2,7 @@ package hhh.myapparch.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
@@ -12,6 +13,7 @@ import hhh.myapparch.log.MyLog;
  */
 public class MyService extends Service {
     public static final String TAG="MyService";
+    private MyBinder myBinder=new MyBinder();
 
     @Override
     public void onCreate() {
@@ -34,8 +36,12 @@ public class MyService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return myBinder;
     }
 
-
+    class MyBinder extends Binder{
+        public void startDownload(){
+            MyLog.LogWithString("startDownload");
+        }
+    }
 }
