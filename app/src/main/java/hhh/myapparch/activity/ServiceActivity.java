@@ -2,9 +2,11 @@ package hhh.myapparch.activity;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -17,6 +19,7 @@ import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 
 import hhh.myapparch.R;
+import hhh.myapparch.service.BroadCastService;
 import hhh.myapparch.service.MyService;
 
 /**
@@ -34,6 +37,15 @@ public class ServiceActivity extends BaseActivity {
     }
 
     private ProgressDialog dialog;
+    private BroadcastReceiver receiver=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(BroadCastService.CACTION)){
+                int progress=intent.getIntExtra("progress",0);
+                dialog.setProgress(progress);
+            }
+        }
+    };
 
     public static void startActivity(Context context){
         Intent intent=new Intent(context,ServiceActivity.class);
@@ -43,9 +55,12 @@ public class ServiceActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        IntentFilter filter=new IntentFilter();
+        filter.addAction(BroadCastService.CACTION);
+        registerReceiver(receiver,filter);
     }
 
-    @Event(value={R.id.start_service,R.id.stop_service,R.id.bind_service,R.id.unbind_service,R.id.download},type= View.OnClickListener.class)
+    @Event(value={R.id.start_service,R.id.stop_service,R.id.bind_service,R.id.unbind_service,R.id.download,R.id.broadcast},type= View.OnClickListener.class)
     private void buttonClick(View v){
         switch (v.getId()){
             case R.id.start_service:
@@ -66,6 +81,8 @@ public class ServiceActivity extends BaseActivity {
             case R.id.download:
                 myService.startDownload();
                 createdialog();
+                break;
+            case R.id.broadcast:
                 break;
         }
     }
