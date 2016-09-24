@@ -51,6 +51,8 @@ public class MainActivity extends BaseActivity {
                     case 1:
                         ServiceActivity.startActivity(MainActivity.this);
                         break;
+                    case 2:
+                        ButterKnifeActivity.startAcitvity(MainActivity.this);
                     default:
                         break;
                 }
@@ -64,7 +66,7 @@ public class MainActivity extends BaseActivity {
         data=new ArrayList<String>();
         data.add("RecyclerView List");
         data.add("Service");
-        data.add("XUtil Test");
+        data.add("ButterKnife");
         data.add("XUtil Test");
         data.add("XUtil Test");
         data.add("XUtil Test");

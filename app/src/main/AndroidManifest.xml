@@ -22,6 +22,7 @@
         <activity android:name=".activity.XutilActivity"/>
         <activity android:name=".activity.MyListActivity"/>
         <activity android:name=".activity.ServiceActivity"/>
+        <activity android:name=".activity.ButterKnifeActivity"/>
 
         <service android:name=".service.MyService"/>
     </application>
