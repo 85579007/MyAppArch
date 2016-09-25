@@ -6,8 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 
-import org.xutils.x;
-
 import hhh.myapparch.R;
 import hhh.myapparch.helper.ActivityManager;
 import hhh.myapparch.http.XUtils;
@@ -23,7 +21,7 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityManager.getInstance().put(getClass().getName(),this);
-        x.view().inject(this);
+
     }
 
     @Override

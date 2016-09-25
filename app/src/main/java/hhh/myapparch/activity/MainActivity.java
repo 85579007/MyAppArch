@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.ViewInject;
+import org.xutils.x;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        x.view().inject(this);
 //        setSupportActionBar(toolbar);
         getData();
 
@@ -67,10 +69,10 @@ public class MainActivity extends BaseActivity {
         data.add("RecyclerView List");
         data.add("Service");
         data.add("ButterKnife");
-        data.add("XUtil Test");
-        data.add("XUtil Test");
-        data.add("XUtil Test");
-        data.add("XUtil Test");
+        data.add("okhttp");
+        data.add("RxJava");
+        data.add("Retrofit");
+        data.add("Picasso");
         data.add("XUtil Test");
     }
 

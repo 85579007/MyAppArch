@@ -15,6 +15,7 @@ import android.widget.Button;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
+import org.xutils.x;
 
 import hhh.myapparch.R;
 import hhh.myapparch.service.BroadCastService;
@@ -53,6 +54,7 @@ public class ServiceActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        x.view().inject(this);
         IntentFilter filter=new IntentFilter();
         filter.addAction(BroadCastService.CACTION);
         registerReceiver(receiver,filter);

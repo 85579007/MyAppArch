@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.ViewInject;
+import org.xutils.x;
 
 import hhh.myapparch.R;
 import hhh.myapparch.fragment.DbFragment;
@@ -41,6 +42,7 @@ public class XutilActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        x.view().inject(this);
         setSupportActionBar(toolbar);
         adapter=new MyPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
