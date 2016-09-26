@@ -9,11 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
-import org.xutils.http.RequestParams;
-import org.xutils.x;
 
 import java.io.IOException;
 
@@ -25,8 +21,10 @@ import hhh.myapparch.http.XUtils;
 import hhh.myapparch.log.MyLog;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
@@ -113,6 +111,35 @@ public class OkHttpActivity extends BaseActivity {
 //                });
                 break;
             case R.id.post:
+                String url1="http://119.29.193.241/user/login";
+                OkHttpClient client=new OkHttpClient();
+                RequestBody requestBody=new FormBody.Builder()
+                        .add("phone","13500001111")
+                        .add("pwd","12345678")
+                        .build();
+                Request request1=new Request.Builder()
+                        .url(url1)
+                        .post(requestBody)
+                        .build();
+                client.newCall(request1).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        XUtils.show("net error");
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        String txt=response.body().string();
+                        JSONObject obj= JSON.parseObject(txt);
+                        int code=obj.getInteger("code");
+                        if(code==0){
+                            JSONObject data=JSON.parseObject(obj.getString("data"));
+                            XUtils.show("return email="+data.getString("email"));
+                        }else{
+                            XUtils.show(obj.getString("message"));
+                        }
+                    }
+                });
                 break;
         }
     }
