@@ -55,6 +55,13 @@ public class MainActivity extends BaseActivity {
                         break;
                     case 2:
                         ButterKnifeActivity.startAcitvity(MainActivity.this);
+                        break;
+                    case 3:
+                        OkHttpActivity.startAcitvity(MainActivity.this);
+                        break;
+                    case 6:
+                        PicassoActivity.startActivity(MainActivity.this);
+                        break;
                     default:
                         break;
                 }

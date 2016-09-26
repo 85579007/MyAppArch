@@ -23,9 +23,16 @@
         <activity android:name=".activity.MyListActivity"/>
         <activity android:name=".activity.ServiceActivity"/>
         <activity android:name=".activity.ButterKnifeActivity"/>
+        <activity android:name=".activity.OkHttpActivity"/>
+        <activity android:name=".activity.PicassoActivity"/>
 
         <service android:name=".service.MyService"/>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
+
 </manifest>
