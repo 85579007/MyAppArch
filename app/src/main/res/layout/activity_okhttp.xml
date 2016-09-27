@@ -12,8 +12,17 @@
         android:layout_height="wrap_content"
         android:id="@+id/post"
         android:text="Http Post"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/getimg"
+        android:text="Get Image"/>
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/txt"/>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/image"/>
 </LinearLayout>

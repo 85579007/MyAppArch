@@ -59,6 +59,9 @@ public class MainActivity extends BaseActivity {
                     case 3:
                         OkHttpActivity.startAcitvity(MainActivity.this);
                         break;
+                    case 4:
+                        RxJavaActivity.startAcitivity(MainActivity.this);
+                        break;
                     case 6:
                         PicassoActivity.startActivity(MainActivity.this);
                         break;
