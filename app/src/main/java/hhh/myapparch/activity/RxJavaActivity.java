@@ -8,15 +8,26 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import java.io.IOException;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import hhh.myapparch.R;
+import hhh.myapparch.bean.Result;
+import hhh.myapparch.bean.Student;
 import hhh.myapparch.log.MyLog;
+import hhh.myapparch.utils.JsonUtils;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by hhh on 2016/9/27.
@@ -28,6 +39,10 @@ public class RxJavaActivity extends BaseActivity {
     ImageView img;
     @BindView(R.id.rxbtn2)
     Button rxbtn2;
+    @BindView(R.id.rxbtn3)
+    Button rxbtn3;
+
+    private OkHttpClient client=new OkHttpClient();
 
 //    private rx.Observable<String> observable;
 
@@ -95,7 +110,7 @@ public class RxJavaActivity extends BaseActivity {
 
     private int i = 0;
 
-    @OnClick({R.id.rxbtn1,R.id.rxbtn2})
+    @OnClick({R.id.rxbtn1, R.id.rxbtn2, R.id.rxbtn3})
     public void onClick(View v) {
 //        rx.Observable.just("message"+i).subscribe(new Action1<String>() {
 //            @Override
@@ -103,12 +118,57 @@ public class RxJavaActivity extends BaseActivity {
 //                MyLog.LogWithString(s);
 //            }
 //        });
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.rxbtn1:
                 Observable.just("msg" + i).subscribe(nextAction, errorAction, completeAction);
                 i++;
                 break;
             case R.id.rxbtn2:
+
+                break;
+            case R.id.rxbtn3:
+                String surl="http://119.29.193.241/student/get";
+                Observable.just(surl)
+                        .map(new Func1<String, Result<Student>>() {
+                            @Override
+                            public Result<Student> call(String s) {
+                                Request request=new Request.Builder()
+                                        .url(s)
+                                        .build();
+                                try {
+                                    Response response=client.newCall(request).execute();
+                                    return JsonUtils.fromJson(response.body().string(),Result.class);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                return null;
+                            }
+                        })
+                        .flatMap(new Func1<Result<Student>, Observable<Student>>() {
+                            @Override
+                            public Observable<Student> call(Result<Student> studentResult) {
+                                //return Observable.just(studentResult.getData());
+                                return null;
+                            }
+                        })
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<Student>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onNext(Student student) {
+
+                            }
+                        });
                 break;
         }
     }
