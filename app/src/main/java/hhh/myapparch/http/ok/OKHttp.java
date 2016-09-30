@@ -41,17 +41,17 @@ public class OKHttp {
 //        }
 //    };
 
-    private MyCallback myCallback=new MyCallback(handler, new CommonCallback() {
-        @Override
-        public void onError(Request request, Exception e) {
-
-        }
-
-        @Override
-        public void onResponse(Object response) {
-
-        }
-    });
+//    private MyCallback myCallback=new MyCallback(handler, new CommonCallback() {
+//        @Override
+//        public void onError(Request request, Exception e) {
+//
+//        }
+//
+//        @Override
+//        public void onResponse(Object response) {
+//
+//        }
+//    });
 
     public static OKHttp getOKHttp(){
         if(mInstance==null){
@@ -73,7 +73,7 @@ public class OKHttp {
         final Request request=new Request.Builder()
                 .url(url)
                 .build();
-        mOkHttpClient.newCall(request).enqueue(myCallback);
+        mOkHttpClient.newCall(request).enqueue(new MyCallback(handler,callback));
 //        mOkHttpClient.newCall(request).enqueue(new Callback() {
 //            @Override
 //            public void onFailure(Call call, IOException e) {
@@ -104,7 +104,7 @@ public class OKHttp {
                 .url(url)
                 .post(builder.build())
                 .build();
-        mOkHttpClient.newCall(request).enqueue(myCallback);
+        mOkHttpClient.newCall(request).enqueue(new MyCallback(handler,callback));
 //        mOkHttpClient.newCall(request).enqueue(new Callback() {
 //            @Override
 //            public void onFailure(Call call, IOException e) {
