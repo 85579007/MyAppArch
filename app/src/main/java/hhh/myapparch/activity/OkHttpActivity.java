@@ -20,6 +20,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import hhh.myapparch.R;
+import hhh.myapparch.http.ok.CommonCallback;
+import hhh.myapparch.http.ok.OKHttp;
 import hhh.myapparch.log.MyLog;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -71,30 +73,44 @@ public class OkHttpActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.get:
-                Request request = new Request.Builder()
-                        .url(url)
-                        .build();
-                Call call = okHttpClient.newCall(request);
+//                Request request = new Request.Builder()
+//                        .url(url)
+//                        .build();
+//                Call call = okHttpClient.newCall(request);
+//
+//                call.enqueue(new Callback() {
+//                    @Override
+//                    public void onFailure(Call call, IOException e) {
+//                        MyLog.LogWithString("failure");
+//                    }
+//
+//                    @Override
+//                    public void onResponse(Call call, final Response response) throws IOException {
+//                        final String s = response.body().string();
+//                        MyLog.LogWithString("ok");
+////                        txt.setText(response.body().string());
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                txt.setText(s);
+//                            }
+//                        });
+//                    }
+//                });
 
-                call.enqueue(new Callback() {
+                OKHttp.getOKHttp().get(url, new CommonCallback<String>() {
                     @Override
-                    public void onFailure(Call call, IOException e) {
+                    public void onError(Request request, Exception e) {
                         MyLog.LogWithString("failure");
                     }
 
                     @Override
-                    public void onResponse(Call call, final Response response) throws IOException {
-                        final String s = response.body().string();
-                        MyLog.LogWithString("ok");
-//                        txt.setText(response.body().string());
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                txt.setText(s);
-                            }
-                        });
+                    public void onResponse(String response) {
+                        txt.setText(response);
                     }
+
                 });
+
 //                RequestParams params=new RequestParams(url);
 //                x.http().get(params, new org.xutils.common.Callback.CommonCallback<String>() {
 //                    @Override
