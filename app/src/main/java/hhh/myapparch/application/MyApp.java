@@ -1,14 +1,10 @@
 package hhh.myapparch.application;
 
 import android.app.Application;
-import android.os.Build;
-import android.util.Log;
-
-import org.xutils.x;
 
 import hhh.myapparch.BuildConfig;
 import hhh.myapparch.dialog.Loading;
-import hhh.myapparch.http.XUtils;
+import hhh.myapparch.http.x.XUtils;
 import hhh.myapparch.log.MyLog;
 
 /**

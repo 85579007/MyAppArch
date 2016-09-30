@@ -8,7 +8,7 @@ import android.view.KeyEvent;
 
 import hhh.myapparch.R;
 import hhh.myapparch.helper.ActivityManager;
-import hhh.myapparch.http.XUtils;
+import hhh.myapparch.http.x.XUtils;
 
 /**
  * Created by hhh on 2016/6/12.

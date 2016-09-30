@@ -20,8 +20,8 @@ import hhh.myapparch.adapter.MyListAdapter;
 import hhh.myapparch.bean.Result;
 import hhh.myapparch.bean.Student;
 import hhh.myapparch.constant.Code;
-import hhh.myapparch.http.BaseCallback;
-import hhh.myapparch.http.XUtils;
+import hhh.myapparch.http.x.BaseCallback;
+import hhh.myapparch.http.x.XUtils;
 
 /**
  * Created by hhh on 2016/6/16.

@@ -2,24 +2,11 @@ package hhh.myapparch.fragment;
 
 import android.view.View;
 
-import org.xutils.http.HttpMethod;
-import org.xutils.http.RequestParams;
-import org.xutils.http.annotation.HttpRequest;
-import org.xutils.http.app.ParamsBuilder;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
-import org.xutils.x;
-
-import javax.net.ssl.SSLSocketFactory;
 
 import hhh.myapparch.R;
 import hhh.myapparch.activity.MyListActivity;
-import hhh.myapparch.adapter.MyListAdapter;
-import hhh.myapparch.bean.Result;
-import hhh.myapparch.bean.Student;
-import hhh.myapparch.constant.Code;
-import hhh.myapparch.http.BaseCallback;
-import hhh.myapparch.http.XUtils;
 
 /**
  * Created by hhh on 2016/6/12.

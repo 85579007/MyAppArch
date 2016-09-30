@@ -1,6 +1,4 @@
-package hhh.myapparch.http;
-
-import com.alibaba.fastjson.JSON;
+package hhh.myapparch.http.x;
 
 import org.xutils.common.Callback.CommonCallback;
 

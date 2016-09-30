@@ -7,7 +7,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import hhh.myapparch.activity.ServiceActivity;
-import hhh.myapparch.http.XUtils;
+import hhh.myapparch.http.x.XUtils;
 import hhh.myapparch.log.MyLog;
 
 /**
