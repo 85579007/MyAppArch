@@ -1,5 +1,6 @@
 package hhh.myapparch.bean;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -16,6 +17,11 @@ public class Student {
         this.name = name;
         this.address = address;
         this.birthday = birthday;
+    }
+
+    @Override
+    public String toString() {
+        return "name:"+name+",address:"+address+",birthday:"+ new SimpleDateFormat("yyyy-mm-dd").format(birthday);
     }
 
     public String getName() {
