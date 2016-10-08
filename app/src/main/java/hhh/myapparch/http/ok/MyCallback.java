@@ -27,7 +27,7 @@ public abstract class MyCallback<T> implements Callback {
     }
 
     public abstract void onError(Request request, Exception e);
-    public abstract void onResponse(T response);
+    public abstract void onSuccess(T response);
 
     Handler handler;
 
@@ -40,19 +40,18 @@ public abstract class MyCallback<T> implements Callback {
         sendFailed(null,e);
     }
 
-    @Override
-    public void onResponse(Call call, Response response) throws IOException {
-        String string=response.body().string();
-        MyLog.LogWithString(string);
+//    public void onResponse(Call call, Response response) throws IOException {
+//        String string=response.body().string();
+//        MyLog.LogWithString(string);
 //        if(this.mType==String.class){
-//            sendSuccess(string);
+//            sendSuccess((T)string);
 //        }else{
-            T o= JsonUtils.fromJson(string,this.mType);
-            sendSuccess(o);
+//            T o= JsonUtils.fromJson(string,this.mType);
+//            sendSuccess(o);
 //        }
-    }
+//    }
 
-    private void sendFailed(final Request request, final IOException e) {
+    protected void sendFailed(final Request request, final IOException e) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -61,11 +60,11 @@ public abstract class MyCallback<T> implements Callback {
         });
     }
 
-    private void sendSuccess(final T o) {
+    protected void sendSuccess(final T o) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                 onResponse(o);
+                 onSuccess(o);
             }
         });
     }

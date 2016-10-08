@@ -1,10 +1,16 @@
 package hhh.myapparch.http.ok;
 
+import org.xutils.common.util.MD5;
+
+import java.io.File;
 import java.util.Map;
 
+import hhh.myapparch.utils.CipherUtils;
 import okhttp3.FormBody;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 
 /**
  * Created by hhh on 2016/9/30.
@@ -12,27 +18,6 @@ import okhttp3.Request;
 public class OKHttp {
     private static OKHttp mInstance;
     private OkHttpClient mOkHttpClient;
-//    private Handler handler;
-
-//    private CommonCallback callback;
-//    private Callback myCallback=new Callback() {
-//        @Override
-//        public void onFailure(Call call, IOException e) {
-//            sendFailed(null,e,callback);
-//        }
-//
-//        @Override
-//        public void onResponse(Call call, Response response) throws IOException {
-//            String string=response.body().string();
-//            if(callback.mType==String.class){
-//                sendSuccess(string,callback);
-//            }else{
-//                Object o= JsonUtils.fromJson(string,callback.mType);
-//                sendSuccess(o,callback);
-//            }
-//        }
-//    };
-
 
     public static OKHttp getOKHttp(){
         if(mInstance==null){
@@ -55,23 +40,6 @@ public class OKHttp {
                 .url(url)
                 .build();
         mOkHttpClient.newCall(request).enqueue(callback);
-//        mOkHttpClient.newCall(request).enqueue(new Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//                sendFailed(request,e,callback);
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//                String string=response.body().string();
-//                if(callback.mType==String.class){
-//                    sendSuccess(string,callback);
-//                }else{
-//                    Object o= JsonUtils.fromJson(string,callback.mType);
-//                    sendSuccess(o,callback);
-//                }
-//            }
-//        });
     }
 
     public void post(String url, Map<String,String> params, final MyCallback callback){
@@ -86,44 +54,38 @@ public class OKHttp {
                 .post(builder.build())
                 .build();
         mOkHttpClient.newCall(request).enqueue(callback);
-//        mOkHttpClient.newCall(request).enqueue(new Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//                sendFailed(request,e,callback);
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//                String string=response.body().string();
-//                if(callback.mType==String.class){
-//                    sendSuccess(string,callback);
-//                }else{
-//                    Object o= JsonUtils.fromJson(string,callback.mType);
-//                    sendSuccess(o,callback);
-//                }
-//            }
-//        });
     }
 
-//    private void sendFailed(final Request request, final IOException e, final CommonCallback callback) {
-//        handler.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                if(callback!=null){
-//                    callback.onError(request,e);
-//                }
-//            }
-//        });
-//    }
-//
-//    private void sendSuccess(final Object o, final CommonCallback callback) {
-//        handler.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                if(callback!=null){
-//                    callback.onResponse(o);
-//                }
-//            }
-//        });
-//    }
+    public void uploadFile(String url,Map<String,Object> params,final MyCallback callback){
+        MultipartBody.Builder builder=new MultipartBody.Builder();
+        builder.setType(MultipartBody.FORM);
+
+        for(String key:params.keySet()){
+            Object o=params.get(key);
+            if(o instanceof File){
+                File f=(File)o;
+                builder.addFormDataPart(key,f.getName(), RequestBody.create(null,f));
+            }else{
+                builder.addFormDataPart(key,o.toString());
+            }
+        }
+
+        final Request request=new Request.Builder()
+                .url(url)
+                .post(builder.build())
+                .build();
+        mOkHttpClient.newCall(request).enqueue(callback);
+    }
+
+    public void downloadFile(String url,String destDir,MyCallback callback){
+        String fname= CipherUtils.md5(url);
+        File file=new File(destDir,fname);
+        if(file.exists()){
+            return;
+        }
+        Request request=new Request.Builder()
+                .url(url)
+                .build();
+    }
+
 }

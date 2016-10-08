@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,9 +23,12 @@ import butterknife.OnClick;
 import hhh.myapparch.R;
 import hhh.myapparch.bean.Result;
 import hhh.myapparch.bean.Student;
-import hhh.myapparch.http.ok.MyCallback;
+import hhh.myapparch.http.ok.DownloadCallback;
+import hhh.myapparch.http.ok.JsonCallback;
 import hhh.myapparch.http.ok.OKHttp;
+import hhh.myapparch.http.ok.StringCallback;
 import hhh.myapparch.log.MyLog;
+import hhh.myapparch.utils.CipherUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -44,17 +48,26 @@ public class OkHttpActivity extends BaseActivity {
     Button post;
     @BindView(R.id.txt)
     TextView txt;
-    private final String url = "http://119.29.193.241/subject/getsubjects";
     @BindView(R.id.image)
     ImageView image;
     @BindView(R.id.getimg)
     Button getimg;
+    @BindView(R.id.postfile)
+    Button postfile;
+    @BindView(R.id.download)
+    Button download;
+
+    private final String url = "http://119.29.193.241/subject/getsubjects";
+    private final String upload = "http://119.29.193.241/upload/do_upload";
+    private final String fpath = "";
+    private final String downurl="";
+    private final String destdir="";
 
     private Handler handler;
     private OkHttpClient okHttpClient;
     private StudentCallback studentCallback;
 
-    class StudentCallback extends MyCallback<Result<Student>>{
+    class StudentCallback extends JsonCallback<Result<Student>> {
 
         public StudentCallback(Handler handler) {
             super(handler);
@@ -66,19 +79,19 @@ public class OkHttpActivity extends BaseActivity {
         }
 
         @Override
-        public void onResponse(Result<Student> response) {
-            if(response!=null){
-                if(response.getCode()==0){
-                    Student[] s=response.getData();
-                    StringBuffer buffer=new StringBuffer();
-                    for(Student student:s){
+        public void onSuccess(Result<Student> response) {
+            if (response != null) {
+                if (response.getCode() == 0) {
+                    Student[] s = response.getData();
+                    StringBuffer buffer = new StringBuffer();
+                    for (Student student : s) {
                         buffer.append(student.getName());
                     }
                     txt.setText(buffer);
-                }else{
+                } else {
                     txt.setText(response.getMessage());
                 }
-            }else{
+            } else {
                 txt.setText("response null error");
             }
         }
@@ -96,15 +109,46 @@ public class OkHttpActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         okHttpClient = new OkHttpClient();
-        handler=new Handler(getMainLooper());
-        studentCallback=new StudentCallback(handler);
+        handler = new Handler(getMainLooper());
+        studentCallback = new StudentCallback(handler);
     }
 
-    @OnClick({R.id.get, R.id.post,R.id.getimg})
+    @OnClick({R.id.get, R.id.post, R.id.getimg, R.id.postfile,R.id.download})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.download:
+                String fname= CipherUtils.md5(downurl);
+                File file=new File(destdir,fname);
+                OKHttp.getOKHttp().downloadFile(downurl, destdir, new DownloadCallback(handler,file) {
+                    @Override
+                    public void onError(Request request, Exception e) {
+                        txt.setText(e.toString());
+                    }
+
+                    @Override
+                    public void onSuccess(String response) {
+                        txt.setText(response);
+                    }
+                });
+                break;
+            case R.id.postfile:
+                Map<String, Object> params = new HashMap<String, Object>();
+                File f = new File(fpath);
+                params.put("userfile", f);
+                OKHttp.getOKHttp().uploadFile(upload, params, new StringCallback(handler) {
+                    @Override
+                    public void onError(Request request, Exception e) {
+                        MyLog.LogWithString(e.toString());
+                    }
+
+                    @Override
+                    public void onSuccess(String response) {
+                        txt.setText(response);
+                    }
+                });
+                break;
             case R.id.get:
-                OKHttp.getOKHttp().get(url,studentCallback);
+                OKHttp.getOKHttp().get(url, studentCallback);
 //                Request request = new Request.Builder()
 //                        .url(url)
 //                        .build();
@@ -117,7 +161,7 @@ public class OkHttpActivity extends BaseActivity {
 //                    }
 //
 //                    @Override
-//                    public void onResponse(Call call, final Response response) throws IOException {
+//                    public void onSuccess(Call call, final Response response) throws IOException {
 //                        final String s = response.body().string();
 //                        MyLog.LogWithString("ok");
 ////                        txt.setText(response.body().string());
@@ -130,7 +174,7 @@ public class OkHttpActivity extends BaseActivity {
 //                    }
 //                });
 //                RequestParams params=new RequestParams(url);
-//                x.http().get(params, new org.xutils.common.Callback.CommonCallback<String>() {
+//                x.http().get(params, new org.xutils.common.Callback.JsonCallback<String>() {
 //                    @Override
 //                    public void onSuccess(String result) {
 //                        //XUtils.show(result);
@@ -160,10 +204,10 @@ public class OkHttpActivity extends BaseActivity {
                 break;
             case R.id.post:
                 String url1 = "http://119.29.193.241/user/login";
-                Map<String,String> map=new HashMap<String,String>();
-                map.put("phone","13500001111");
-                map.put("pwd","12345678");
-                OKHttp.getOKHttp().post(url1,map,studentCallback);
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("phone", "13500001111");
+                map.put("pwd", "12345678");
+                OKHttp.getOKHttp().post(url1, map, studentCallback);
 //                OKHttp.getOKHttp().post(url, map, new MyCallback<Result<Student>>(handler) {
 //                    @Override
 //                    public void onError(Request request, Exception e) {
@@ -171,7 +215,7 @@ public class OkHttpActivity extends BaseActivity {
 //                    }
 //
 //                    @Override
-//                    public void onResponse(Result<Student> response) {
+//                    public void onSuccess(Result<Student> response) {
 //
 //                    }
 //
@@ -193,7 +237,7 @@ public class OkHttpActivity extends BaseActivity {
 //                    }
 //
 //                    @Override
-//                    public void onResponse(Call call, Response response) throws IOException {
+//                    public void onSuccess(Call call, Response response) throws IOException {
 //                        String txt = response.body().string();
 //                        JSONObject obj = JSON.parseObject(txt);
 //                        int code = obj.getInteger("code");
@@ -209,16 +253,16 @@ public class OkHttpActivity extends BaseActivity {
 //                });
                 break;
             case R.id.getimg:
-                String imgurl="http://img1.gtimg.com/ninja/1/2016/09/ninja147463577893061.jpg";
+                String imgurl = "http://img1.gtimg.com/ninja/1/2016/09/ninja147463577893061.jpg";
                 Observable.just(imgurl)
                         .map(new Func1<String, Bitmap>() {
                             @Override
                             public Bitmap call(String s) {
-                                Request request2=new Request.Builder()
+                                Request request2 = new Request.Builder()
                                         .url(s)
                                         .build();
                                 try {
-                                    Response response=okHttpClient.newCall(request2).execute();
+                                    Response response = okHttpClient.newCall(request2).execute();
                                     return BitmapFactory.decodeStream(response.body().byteStream());
                                 } catch (IOException e) {
                                     e.printStackTrace();
