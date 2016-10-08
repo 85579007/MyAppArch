@@ -17,6 +17,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/rxbtn3"
         android:text="Show Subjects"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rxtxt"/>
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

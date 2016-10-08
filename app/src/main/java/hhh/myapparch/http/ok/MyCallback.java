@@ -3,7 +3,10 @@ package hhh.myapparch.http.ok;
 import android.os.Handler;
 
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
+import hhh.myapparch.log.MyLog;
 import hhh.myapparch.utils.JsonUtils;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -13,49 +16,56 @@ import okhttp3.Response;
 /**
  * Created by hhh on 2016/9/30.
  */
-public class MyCallback implements Callback {
-    CommonCallback callback;
+public abstract class MyCallback<T> implements Callback {
+    Type mType;
+
+
+    public MyCallback(Handler handler) {
+        this.handler=handler;
+        Type superClass=this.getClass().getGenericSuperclass();
+        mType =((ParameterizedType)superClass).getActualTypeArguments()[0];
+    }
+
+    public abstract void onError(Request request, Exception e);
+    public abstract void onResponse(T response);
+
     Handler handler;
 
-    public MyCallback(Handler handler,CommonCallback resultCallback) {
-        this.handler=handler;
-        this.callback=resultCallback;
-    }
+//    public MyCallback(Handler handler) {
+//        this.handler=handler;
+//    }
 
     @Override
     public void onFailure(Call call, IOException e) {
-        sendFailed(null,e,callback);
+        sendFailed(null,e);
     }
 
     @Override
     public void onResponse(Call call, Response response) throws IOException {
         String string=response.body().string();
-        if(callback.mType==String.class){
-            sendSuccess(string,callback);
-        }else{
-            Object o= JsonUtils.fromJson(string,callback.mType);
-            sendSuccess(o,callback);
-        }
+        MyLog.LogWithString(string);
+//        if(this.mType==String.class){
+//            sendSuccess(string);
+//        }else{
+            T o= JsonUtils.fromJson(string,this.mType);
+            sendSuccess(o);
+//        }
     }
 
-    private void sendFailed(final Request request, final IOException e, final CommonCallback callback) {
+    private void sendFailed(final Request request, final IOException e) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                if(callback!=null){
-                    callback.onError(request,e);
-                }
+                onError(request,e);
             }
         });
     }
 
-    private void sendSuccess(final Object o, final CommonCallback callback) {
+    private void sendSuccess(final T o) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                if(callback!=null){
-                    callback.onResponse(o);
-                }
+                 onResponse(o);
             }
         });
     }

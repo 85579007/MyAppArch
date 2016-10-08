@@ -5,33 +5,30 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import hhh.myapparch.R;
-import hhh.myapparch.http.ok.CommonCallback;
+import hhh.myapparch.bean.Result;
+import hhh.myapparch.bean.Student;
+import hhh.myapparch.http.ok.MyCallback;
 import hhh.myapparch.http.ok.OKHttp;
 import hhh.myapparch.log.MyLog;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 import rx.Observable;
-import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -53,7 +50,39 @@ public class OkHttpActivity extends BaseActivity {
     @BindView(R.id.getimg)
     Button getimg;
 
+    private Handler handler;
     private OkHttpClient okHttpClient;
+    private StudentCallback studentCallback;
+
+    class StudentCallback extends MyCallback<Result<Student>>{
+
+        public StudentCallback(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        public void onError(Request request, Exception e) {
+            txt.setText("student callback error");
+        }
+
+        @Override
+        public void onResponse(Result<Student> response) {
+            if(response!=null){
+                if(response.getCode()==0){
+                    Student[] s=response.getData();
+                    StringBuffer buffer=new StringBuffer();
+                    for(Student student:s){
+                        buffer.append(student.getName());
+                    }
+                    txt.setText(buffer);
+                }else{
+                    txt.setText(response.getMessage());
+                }
+            }else{
+                txt.setText("response null error");
+            }
+        }
+    }
 
     public static void startAcitvity(Context context) {
         Intent intent = new Intent(context, OkHttpActivity.class);
@@ -67,12 +96,15 @@ public class OkHttpActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         okHttpClient = new OkHttpClient();
+        handler=new Handler(getMainLooper());
+        studentCallback=new StudentCallback(handler);
     }
 
     @OnClick({R.id.get, R.id.post,R.id.getimg})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.get:
+                OKHttp.getOKHttp().get(url,studentCallback);
 //                Request request = new Request.Builder()
 //                        .url(url)
 //                        .build();
@@ -97,20 +129,6 @@ public class OkHttpActivity extends BaseActivity {
 //                        });
 //                    }
 //                });
-
-                OKHttp.getOKHttp().get(url, new CommonCallback<String>() {
-                    @Override
-                    public void onError(Request request, Exception e) {
-                        MyLog.LogWithString("failure");
-                    }
-
-                    @Override
-                    public void onResponse(String response) {
-                        txt.setText(response);
-                    }
-
-                });
-
 //                RequestParams params=new RequestParams(url);
 //                x.http().get(params, new org.xutils.common.Callback.CommonCallback<String>() {
 //                    @Override
@@ -142,36 +160,53 @@ public class OkHttpActivity extends BaseActivity {
                 break;
             case R.id.post:
                 String url1 = "http://119.29.193.241/user/login";
-                RequestBody requestBody = new FormBody.Builder()
-                        .add("phone", "13500001111")
-                        .add("pwd", "12345678")
-                        .build();
-                Request request1 = new Request.Builder()
-                        .url(url1)
-                        .post(requestBody)
-                        .build();
-                okHttpClient.newCall(request1).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        //XUtils.show("net error");
-                        MyLog.LogWithString("net error");
-                    }
+                Map<String,String> map=new HashMap<String,String>();
+                map.put("phone","13500001111");
+                map.put("pwd","12345678");
+                OKHttp.getOKHttp().post(url1,map,studentCallback);
+//                OKHttp.getOKHttp().post(url, map, new MyCallback<Result<Student>>(handler) {
+//                    @Override
+//                    public void onError(Request request, Exception e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onResponse(Result<Student> response) {
+//
+//                    }
+//
+//                });
 
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        String txt = response.body().string();
-                        JSONObject obj = JSON.parseObject(txt);
-                        int code = obj.getInteger("code");
-                        if (code == 0) {
-                            JSONObject data = JSON.parseObject(obj.getString("data"));
-                            //MyLog.LogWithString("return email="+data.getString("email"));
-                            showInUI("return email=" + data.getString("email"));
-                        } else {
-                            //MyLog.LogWithString(obj.getString("message"));
-                            showInUI(obj.getString("message"));
-                        }
-                    }
-                });
+//                RequestBody requestBody = new FormBody.Builder()
+//                        .add("phone", "13500001111")
+//                        .add("pwd", "12345678")
+//                        .build();
+//                Request request1 = new Request.Builder()
+//                        .url(url1)
+//                        .post(requestBody)
+//                        .build();
+//                okHttpClient.newCall(request1).enqueue(new Callback() {
+//                    @Override
+//                    public void onFailure(Call call, IOException e) {
+//                        //XUtils.show("net error");
+//                        MyLog.LogWithString("net error");
+//                    }
+//
+//                    @Override
+//                    public void onResponse(Call call, Response response) throws IOException {
+//                        String txt = response.body().string();
+//                        JSONObject obj = JSON.parseObject(txt);
+//                        int code = obj.getInteger("code");
+//                        if (code == 0) {
+//                            JSONObject data = JSON.parseObject(obj.getString("data"));
+//                            //MyLog.LogWithString("return email="+data.getString("email"));
+//                            showInUI("return email=" + data.getString("email"));
+//                        } else {
+//                            //MyLog.LogWithString(obj.getString("message"));
+//                            showInUI(obj.getString("message"));
+//                        }
+//                    }
+//                });
                 break;
             case R.id.getimg:
                 String imgurl="http://img1.gtimg.com/ninja/1/2016/09/ninja147463577893061.jpg";

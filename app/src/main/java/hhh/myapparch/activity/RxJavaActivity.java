@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.io.IOException;
 
@@ -16,6 +17,7 @@ import butterknife.OnClick;
 import hhh.myapparch.R;
 import hhh.myapparch.bean.Result;
 import hhh.myapparch.bean.Student;
+import hhh.myapparch.http.x.XUtils;
 import hhh.myapparch.log.MyLog;
 import hhh.myapparch.utils.JsonUtils;
 import okhttp3.OkHttpClient;
@@ -41,8 +43,10 @@ public class RxJavaActivity extends BaseActivity {
     Button rxbtn2;
     @BindView(R.id.rxbtn3)
     Button rxbtn3;
+    @BindView(R.id.rxtxt)
+    TextView rxtxt;
 
-    private OkHttpClient client=new OkHttpClient();
+    private OkHttpClient client = new OkHttpClient();
 
 //    private rx.Observable<String> observable;
 
@@ -66,6 +70,7 @@ public class RxJavaActivity extends BaseActivity {
         @Override
         public void call(String s) {
             MyLog.LogWithString(s);
+            rxtxt.append(s);
         }
     };
 
@@ -80,6 +85,7 @@ public class RxJavaActivity extends BaseActivity {
         @Override
         public void call() {
             MyLog.LogWithString("completed");
+            rxtxt.append("completed");
         }
     };
 
@@ -127,17 +133,19 @@ public class RxJavaActivity extends BaseActivity {
 
                 break;
             case R.id.rxbtn3:
-                String surl="http://119.29.193.241/student/get";
+                String surl = "http://119.29.193.241/student/get";
+                XUtils.show(surl);
                 Observable.just(surl)
                         .map(new Func1<String, Result<Student>>() {
                             @Override
                             public Result<Student> call(String s) {
-                                Request request=new Request.Builder()
+                                Request request = new Request.Builder()
                                         .url(s)
                                         .build();
                                 try {
-                                    Response response=client.newCall(request).execute();
-                                    return JsonUtils.fromJson(response.body().string(),Result.class);
+                                    Response response = client.newCall(request).execute();
+                                    Result<Student> rs=new Result<Student>(){};
+                                    return JsonUtils.fromJson(response.body().string(), rs.getClass().getGenericSuperclass());
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -147,8 +155,7 @@ public class RxJavaActivity extends BaseActivity {
                         .flatMap(new Func1<Result<Student>, Observable<Student>>() {
                             @Override
                             public Observable<Student> call(Result<Student> studentResult) {
-                                //return Observable.just(studentResult.getData());
-                                return null;
+                                return Observable.from(studentResult.getData());
                             }
                         })
                         .subscribeOn(Schedulers.io())
@@ -156,17 +163,17 @@ public class RxJavaActivity extends BaseActivity {
                         .subscribe(new Subscriber<Student>() {
                             @Override
                             public void onCompleted() {
-
+                                rxtxt.append("student : completed");
                             }
 
                             @Override
                             public void onError(Throwable e) {
-
+                                rxtxt.append("student : error"+e.getMessage());
                             }
 
                             @Override
                             public void onNext(Student student) {
-
+                                rxtxt.append(student.toString());
                             }
                         });
                 break;

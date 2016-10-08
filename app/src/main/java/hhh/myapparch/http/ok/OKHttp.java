@@ -1,18 +1,10 @@
 package hhh.myapparch.http.ok;
 
-import android.os.Handler;
-import android.os.Looper;
-
-import java.io.IOException;
 import java.util.Map;
 
-import hhh.myapparch.utils.JsonUtils;
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * Created by hhh on 2016/9/30.
@@ -20,7 +12,7 @@ import okhttp3.Response;
 public class OKHttp {
     private static OKHttp mInstance;
     private OkHttpClient mOkHttpClient;
-    private Handler handler;
+//    private Handler handler;
 
 //    private CommonCallback callback;
 //    private Callback myCallback=new Callback() {
@@ -41,17 +33,6 @@ public class OKHttp {
 //        }
 //    };
 
-//    private MyCallback myCallback=new MyCallback(handler, new CommonCallback() {
-//        @Override
-//        public void onError(Request request, Exception e) {
-//
-//        }
-//
-//        @Override
-//        public void onResponse(Object response) {
-//
-//        }
-//    });
 
     public static OKHttp getOKHttp(){
         if(mInstance==null){
@@ -66,14 +47,14 @@ public class OKHttp {
 
     private OKHttp(){
         mOkHttpClient=new OkHttpClient();
-        handler=new Handler(Looper.getMainLooper());
+//        handler=new Handler(Looper.getMainLooper());
     }
 
-    public void get(String url, final CommonCallback callback){
+    public void get(String url, final MyCallback callback){
         final Request request=new Request.Builder()
                 .url(url)
                 .build();
-        mOkHttpClient.newCall(request).enqueue(new MyCallback(handler,callback));
+        mOkHttpClient.newCall(request).enqueue(callback);
 //        mOkHttpClient.newCall(request).enqueue(new Callback() {
 //            @Override
 //            public void onFailure(Call call, IOException e) {
@@ -93,7 +74,7 @@ public class OKHttp {
 //        });
     }
 
-    public void post(String url, Map<String,String> params, final CommonCallback callback){
+    public void post(String url, Map<String,String> params, final MyCallback callback){
         FormBody.Builder builder=new FormBody.Builder();
         if(params!=null&&params.size()>0){
             for(Map.Entry<String,String> entry:params.entrySet()){
@@ -104,7 +85,7 @@ public class OKHttp {
                 .url(url)
                 .post(builder.build())
                 .build();
-        mOkHttpClient.newCall(request).enqueue(new MyCallback(handler,callback));
+        mOkHttpClient.newCall(request).enqueue(callback);
 //        mOkHttpClient.newCall(request).enqueue(new Callback() {
 //            @Override
 //            public void onFailure(Call call, IOException e) {
