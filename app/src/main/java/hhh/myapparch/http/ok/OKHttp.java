@@ -1,7 +1,5 @@
 package hhh.myapparch.http.ok;
 
-import org.xutils.common.util.MD5;
-
 import java.io.File;
 import java.util.Map;
 
@@ -35,14 +33,14 @@ public class OKHttp {
 //        handler=new Handler(Looper.getMainLooper());
     }
 
-    public void get(String url, final MyCallback callback){
+    public void get(String url, final BaseCallback callback){
         final Request request=new Request.Builder()
                 .url(url)
                 .build();
         mOkHttpClient.newCall(request).enqueue(callback);
     }
 
-    public void post(String url, Map<String,String> params, final MyCallback callback){
+    public void post(String url, Map<String,String> params, final BaseCallback callback){
         FormBody.Builder builder=new FormBody.Builder();
         if(params!=null&&params.size()>0){
             for(Map.Entry<String,String> entry:params.entrySet()){
@@ -56,7 +54,7 @@ public class OKHttp {
         mOkHttpClient.newCall(request).enqueue(callback);
     }
 
-    public void uploadFile(String url,Map<String,Object> params,final MyCallback callback){
+    public void uploadFile(String url,Map<String,Object> params,final BaseCallback callback){
         MultipartBody.Builder builder=new MultipartBody.Builder();
         builder.setType(MultipartBody.FORM);
 
@@ -77,15 +75,11 @@ public class OKHttp {
         mOkHttpClient.newCall(request).enqueue(callback);
     }
 
-    public void downloadFile(String url,String destDir,MyCallback callback){
-        String fname= CipherUtils.md5(url);
-        File file=new File(destDir,fname);
-        if(file.exists()){
-            return;
-        }
+    public void downloadFile(String url,BaseCallback callback){
         Request request=new Request.Builder()
                 .url(url)
                 .build();
+        mOkHttpClient.newCall(request).enqueue(callback);
     }
 
 }

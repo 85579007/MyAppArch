@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -29,6 +30,8 @@ import hhh.myapparch.http.ok.OKHttp;
 import hhh.myapparch.http.ok.StringCallback;
 import hhh.myapparch.log.MyLog;
 import hhh.myapparch.utils.CipherUtils;
+import hhh.myapparch.utils.SDCardUtils;
+import hhh.myapparch.utils.T;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -59,9 +62,9 @@ public class OkHttpActivity extends BaseActivity {
 
     private final String url = "http://119.29.193.241/subject/getsubjects";
     private final String upload = "http://119.29.193.241/upload/do_upload";
-    private final String fpath = "";
-    private final String downurl="";
-    private final String destdir="";
+    private final String fpath = "/mnt/sdcard/judge.xml";
+    private final String downurl="http://img1.gtimg.com/ninja/1/2016/09/ninja147463577893061.jpg";
+    private final String destdir="/mnt/sdcard/";
 
     private Handler handler;
     private OkHttpClient okHttpClient;
@@ -74,7 +77,7 @@ public class OkHttpActivity extends BaseActivity {
         }
 
         @Override
-        public void onError(Request request, Exception e) {
+        public void onError(String error) {
             txt.setText("student callback error");
         }
 
@@ -117,12 +120,22 @@ public class OkHttpActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.download:
+
+//                String state= Environment.getExternalStorageState();
+//                MyLog.LogWithString("sd state:"+state);
+//
+//                File file2=this.getExternalFilesDir(null);
+//                MyLog.LogWithString("dir:"+file2.getPath());
+//
+//                File file3=this.getFilesDir();
+//                MyLog.LogWithString("dir:"+file3.getPath());
+
                 String fname= CipherUtils.md5(downurl);
-                File file=new File(destdir,fname);
-                OKHttp.getOKHttp().downloadFile(downurl, destdir, new DownloadCallback(handler,file) {
+                File file=new File(this.getFilesDir(),fname);
+                OKHttp.getOKHttp().downloadFile(downurl, new DownloadCallback(handler,file) {
                     @Override
-                    public void onError(Request request, Exception e) {
-                        txt.setText(e.toString());
+                    public void onError(String error) {
+                        txt.setText(error);
                     }
 
                     @Override
@@ -133,12 +146,16 @@ public class OkHttpActivity extends BaseActivity {
                 break;
             case R.id.postfile:
                 Map<String, Object> params = new HashMap<String, Object>();
+                if(!SDCardUtils.isSDCardEnable()){
+                    T.show(this,"SD Card error");
+                    return ;
+                }
                 File f = new File(fpath);
                 params.put("userfile", f);
                 OKHttp.getOKHttp().uploadFile(upload, params, new StringCallback(handler) {
                     @Override
-                    public void onError(Request request, Exception e) {
-                        MyLog.LogWithString(e.toString());
+                    public void onError(String error) {
+                        txt.setText(error);
                     }
 
                     @Override
@@ -208,7 +225,7 @@ public class OkHttpActivity extends BaseActivity {
                 map.put("phone", "13500001111");
                 map.put("pwd", "12345678");
                 OKHttp.getOKHttp().post(url1, map, studentCallback);
-//                OKHttp.getOKHttp().post(url, map, new MyCallback<Result<Student>>(handler) {
+//                OKHttp.getOKHttp().post(url, map, new BaseCallback<Result<Student>>(handler) {
 //                    @Override
 //                    public void onError(Request request, Exception e) {
 //

@@ -13,11 +13,12 @@ import okhttp3.Response;
 /**
  * Created by hhh on 2016/10/8.
  */
-public abstract class DownloadCallback extends MyCallback<String> {
+public abstract class DownloadCallback extends BaseCallback<String> {
     private File file;
 
     public DownloadCallback(Handler handler, File file) {
         super(handler);
+        mType=String.class;
         this.file=file;
     }
 
@@ -41,6 +42,8 @@ public abstract class DownloadCallback extends MyCallback<String> {
                 fos.close();
             }
             this.sendSuccess("file download success: size("+response.body().contentLength()+")");
+        }else{
+            this.sendFailed("response unsuccessed");
         }
     }
 }
