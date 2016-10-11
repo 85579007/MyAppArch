@@ -11,10 +11,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 
 import com.blankj.utilcode.utils.ImageUtils;
 
@@ -24,10 +25,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import hhh.myapparch.R;
-import hhh.myapparch.adapter.CommonAdapter;
 import hhh.myapparch.adapter.RvCommonAdapter;
 import hhh.myapparch.adapter.RvViewHolder;
-import hhh.myapparch.adapter.ViewHolder;
 import hhh.myapparch.bean.AppInfo;
 import hhh.myapparch.utils.T;
 import rx.Observable;
@@ -45,6 +44,9 @@ public class AppInfoActivity extends BaseActivity {
     RvCommonAdapter<AppInfo> adapter;
     List<AppInfo> apps = new ArrayList<AppInfo>();
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     public static void startAcitvity(Context context) {
         Intent intent = new Intent(context, AppInfoActivity.class);
         context.startActivity(intent);
@@ -56,17 +58,41 @@ public class AppInfoActivity extends BaseActivity {
         setContentView(R.layout.fragment_recycler);
         ButterKnife.bind(this);
 
+        initToolbar();
         initlist();
     }
 
+    private void initToolbar() {
+        toolbar.setTitle("MyAppArch");
+
+        toolbar.inflateMenu(R.menu.toolbar);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                int id=item.getItemId();
+                switch (id){
+                    case R.id.tb_search:
+                        break;
+                    case R.id.tb_notify:
+                        break;
+                    case R.id.item1:
+                        break;
+                    case R.id.item2:
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
     private void initlist() {
-        adapter=new RvCommonAdapter<AppInfo>(this,apps,R.layout.item_appinfo) {
+        adapter = new RvCommonAdapter<AppInfo>(this, apps, R.layout.item_appinfo) {
             @Override
             public void convert(RvViewHolder helper, AppInfo item) {
-                if(item!=null){
-                    TextView label=helper.getView(R.id.appinfo_label);
-                    TextView pkg=helper.getView(R.id.appinfo_pkg);
-                    ImageView iv=helper.getView(R.id.appinfo_iv);
+                if (item != null) {
+                    TextView label = helper.getView(R.id.appinfo_label);
+                    TextView pkg = helper.getView(R.id.appinfo_pkg);
+                    ImageView iv = helper.getView(R.id.appinfo_iv);
                     label.setText(item.getAppLabel());
                     pkg.setText(item.getPkgName());
                     //iv.setImageBitmap(Bitmap);
@@ -75,9 +101,10 @@ public class AppInfoActivity extends BaseActivity {
             }
         };
         fragmentRecyclerList.setAdapter(adapter);
-        LinearLayoutManager llm=new LinearLayoutManager(this);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         fragmentRecyclerList.setLayoutManager(llm);
+        fragmentRecyclerSwipe.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_green_light);
         fragmentRecyclerSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -86,18 +113,18 @@ public class AppInfoActivity extends BaseActivity {
         });
     }
 
-    private void refreshTheList(){
+    private void refreshTheList() {
         getApps().toSortedList()
                 .subscribe(new Subscriber<List<AppInfo>>() {
                     @Override
                     public void onCompleted() {
-                        T.show(getApplicationContext(),"app list show completed"+apps.size());
+                        T.show(getApplicationContext(), "app list show completed" + apps.size());
                         adapter.notifyDataSetChanged();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        T.show(getApplicationContext(),e.toString());
+                        T.show(getApplicationContext(), e.toString());
                         fragmentRecyclerSwipe.setRefreshing(false);
                     }
 

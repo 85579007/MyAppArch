@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/tb_search"
+        android:title="Search"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/search"/>
+    <item
+        android:id="@+id/tb_notify"
+        android:title="location"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/location"/>
+    <item
+        android:id="@+id/item1"
+        android:title="item1"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/item2"
+        android:title="item2"
+        app:showAsAction="never"/>
+</menu>
