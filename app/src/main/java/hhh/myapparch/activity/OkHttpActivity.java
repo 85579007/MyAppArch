@@ -5,13 +5,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.blankj.utilcode.utils.EncryptUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,9 +30,6 @@ import hhh.myapparch.http.ok.JsonCallback;
 import hhh.myapparch.http.ok.OKHttp;
 import hhh.myapparch.http.ok.StringCallback;
 import hhh.myapparch.log.MyLog;
-import hhh.myapparch.utils.CipherUtils;
-import hhh.myapparch.utils.SDCardUtils;
-import hhh.myapparch.utils.T;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -130,7 +128,7 @@ public class OkHttpActivity extends BaseActivity {
 //                File file3=this.getFilesDir();
 //                MyLog.LogWithString("dir:"+file3.getPath());
 
-                String fname= CipherUtils.md5(downurl);
+                String fname= EncryptUtils.encryptMD5ToString(downurl);
                 File file=new File(this.getFilesDir(),fname);
                 OKHttp.getOKHttp().downloadFile(downurl, new DownloadCallback(handler,file) {
                     @Override
@@ -146,10 +144,6 @@ public class OkHttpActivity extends BaseActivity {
                 break;
             case R.id.postfile:
                 Map<String, Object> params = new HashMap<String, Object>();
-                if(!SDCardUtils.isSDCardEnable()){
-                    T.show(this,"SD Card error");
-                    return ;
-                }
                 File f = new File(fpath);
                 params.put("userfile", f);
                 OKHttp.getOKHttp().uploadFile(upload, params, new StringCallback(handler) {

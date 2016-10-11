@@ -130,7 +130,7 @@ public class RxJavaActivity extends BaseActivity {
                 i++;
                 break;
             case R.id.rxbtn2:
-
+                AppInfoActivity.startAcitvity(this);
                 break;
             case R.id.rxbtn3:
                 String surl = "http://119.29.193.241/student/get";
