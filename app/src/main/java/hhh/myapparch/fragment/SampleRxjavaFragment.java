@@ -1,10 +1,11 @@
-package hhh.myapparch.activity;
+package hhh.myapparch.fragment;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import hhh.myapparch.R;
+import hhh.myapparch.activity.AppInfoActivity;
 import hhh.myapparch.bean.Result;
 import hhh.myapparch.bean.Student;
 import hhh.myapparch.http.x.XUtils;
@@ -32,40 +34,22 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
- * Created by hhh on 2016/9/27.
+ * Created by hhh on 2016/10/12.
  */
-public class RxJavaActivity extends BaseActivity {
+public class SampleRxjavaFragment extends Fragment {
     @BindView(R.id.rxbtn1)
     Button rxbtn1;
-    @BindView(R.id.img)
-    ImageView img;
     @BindView(R.id.rxbtn2)
     Button rxbtn2;
     @BindView(R.id.rxbtn3)
     Button rxbtn3;
     @BindView(R.id.rxtxt)
     TextView rxtxt;
+    @BindView(R.id.img)
+    ImageView img;
 
     private OkHttpClient client = new OkHttpClient();
 
-//    private rx.Observable<String> observable;
-
-    //    Subscriber<String> mySubcriber=new Subscriber<String>() {
-//        @Override
-//        public void onCompleted() {
-//            MyLog.LogWithString("completed");
-//        }
-//
-//        @Override
-//        public void onError(Throwable e) {
-//            MyLog.LogWithString("error");
-//        }
-//
-//        @Override
-//        public void onNext(String s) {
-//            MyLog.LogWithString(s);
-//        }
-//    };
     private Action1<String> nextAction = new Action1<String>() {
         @Override
         public void call(String s) {
@@ -89,33 +73,19 @@ public class RxJavaActivity extends BaseActivity {
         }
     };
 
-    public static void startAcitivity(Context context) {
-        Intent intent = new Intent(context, RxJavaActivity.class);
-        context.startActivity(intent);
-    }
-
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rxjava);
-        ButterKnife.bind(this);
-
-        init();
     }
 
-    private void init() {
-        Observable<String> observable = Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(Subscriber<? super String> subscriber) {
-                subscriber.onNext("hello");
-                subscriber.onCompleted();
-            }
-        });
-        observable.subscribe(nextAction, errorAction, completeAction);
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_rxjava, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
-
     private int i = 0;
-
     @OnClick({R.id.rxbtn1, R.id.rxbtn2, R.id.rxbtn3})
     public void onClick(View v) {
 //        rx.Observable.just("message"+i).subscribe(new Action1<String>() {
@@ -130,7 +100,7 @@ public class RxJavaActivity extends BaseActivity {
                 i++;
                 break;
             case R.id.rxbtn2:
-                AppInfoActivity.startAcitvity(this);
+
                 break;
             case R.id.rxbtn3:
                 String surl = "http://119.29.193.241/student/get";
@@ -179,5 +149,4 @@ public class RxJavaActivity extends BaseActivity {
                 break;
         }
     }
-
 }

@@ -3,7 +3,7 @@ package hhh.myapparch.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
 
 import hhh.myapparch.R;
@@ -11,9 +11,9 @@ import hhh.myapparch.helper.ActivityManager;
 import hhh.myapparch.http.x.XUtils;
 
 /**
- * Created by hhh on 2016/6/12.
+ * Created by hhh on 2016/10/12.
  */
-public class BaseActivity extends AppCompatActivity {
+public class BaseFragmentActivity extends FragmentActivity {
     private boolean isExit;
     private Handler handler=new Handler();
 

@@ -25,7 +25,6 @@
         <activity android:name=".activity.ButterKnifeActivity"/>
         <activity android:name=".activity.OkHttpActivity"/>
         <activity android:name=".activity.PicassoActivity"/>
-        <activity android:name=".activity.RxJavaActivity"/>
         <activity android:name=".activity.AppInfoActivity"/>
 
         <service android:name=".service.MyService"/>
